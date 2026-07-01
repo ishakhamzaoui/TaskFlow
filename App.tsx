@@ -1,5 +1,5 @@
-import AppNavigator from './src/screens/HomeScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
-  return <AppNavigator navigation={undefined as any} />;
+  return <AppNavigator />;
 }

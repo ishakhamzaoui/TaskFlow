@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -9,50 +10,48 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
 >;
 
 type Props = {
-    navigation: HomeScreenNavigationProp;
+  navigation: HomeScreenNavigationProp;
+  tasks: Task[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
 };
 
-const sampleTasks: Task[] = [
-    {
-        id: '1',
-        title: 'Learn React Native',
-        completed: false,
-    },
-    {
-        id: '2',
-        title: 'Buy groceries',
-        completed: true,
-    },
-    {
-        id: '3',
-        title: 'Read TypeScript documentation',
-        completed: false,
-    },
-    {
-        id: '4',
-        title: 'Go for a walk',
-        completed: true,
-    },
-];
+export default function HomeScreen({ navigation, tasks, setTasks }: Props) {
 
-export default function HomeScreen({ navigation }: Props) {
+    const toggleComplete = (id: string) => {
+        setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+                task.id === id ? { ...task, completed: !task.completed } : task
+            )
+        );
+    };
+
+    const deleteTask = (id: string) => {
+        setTasks((prevTasks) =>
+            prevTasks.filter((task) => task.id !== id)
+        );
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Today's Tasks</Text>
 
-            {sampleTasks.map((task) => (
+            {tasks.map((task) => (
                 <View key={task.id} style={styles.taskRow}>
-                    <Text style={styles.checkbox}>
-                        {task.completed ? '☑' : '□'}
-                    </Text>
+                    <Pressable onPress={() => toggleComplete(task.id)}>
+                        <Text style={styles.checkbox}>
+                            {task.completed ? '☑' : '□'}
+                        </Text>
+                    </Pressable>
+
                     <Text style={styles.taskTitle}>{task.title}</Text>
+
+                    <Pressable onPress={() => deleteTask(task.id)}>
+                        <Text style={styles.deleteButton}>✕</Text>
+                    </Pressable>
                 </View>
             ))}
 
-            <Pressable
-                style={styles.fab}
-                onPress={() => navigation.navigate('AddTask')}
-            >
+            <Pressable style={styles.fab} onPress={() => navigation.navigate('AddTask')}>
                 <Text style={styles.fabText}>+</Text>
             </Pressable>
         </View>
@@ -70,17 +69,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 16,
     },
-    taskRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
     checkbox: {
         fontSize: 20,
         marginRight: 10,
-    },
-    taskTitle: {
-        fontSize: 18,
     },
     fab: {
         position: 'absolute',
@@ -98,5 +89,19 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
         lineHeight: 32,
+    },
+    taskRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 12,
+    },
+    taskTitle: {
+        flex: 1,
+        fontSize: 18,
+    },
+    deleteButton: {
+        fontSize: 18,
+        color: '#FF3B30',
+        paddingHorizontal: 8,
     },
 });
