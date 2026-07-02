@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { Task } from '../models/Task';
-import { Dispatch, SetStateAction } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import { Category, Task } from '../models/Task';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'TaskDetails'> & {
   tasks: Task[];
@@ -15,6 +15,7 @@ export default function TaskDetailsScreen({ route, navigation, tasks, setTasks }
   const task = tasks.find((t) => t.id === taskId);
 
   const [title, setTitle] = useState(task?.title ?? '');
+  const [category, setCategory] = useState<Category>(task?.category ?? 'Personal');
 
   if (!task) {
     return (
@@ -29,7 +30,7 @@ export default function TaskDetailsScreen({ route, navigation, tasks, setTasks }
 
   const handleSave = () => {
     setTasks((prevTasks) =>
-      prevTasks.map((t) => (t.id === taskId ? { ...t, title } : t))
+      prevTasks.map((t) => (t.id === taskId ? { ...t, title, category } : t))
     );
     navigation.goBack();
   };
@@ -47,6 +48,14 @@ export default function TaskDetailsScreen({ route, navigation, tasks, setTasks }
         onChangeText={setTitle}
         placeholder="Task title"
       />
+      <Picker selectedValue={category}
+        onValueChange={(value) => setCategory(value as Category)}
+      >
+        <Picker.Item label="Work" value="Work" />
+        <Picker.Item label="Personal" value="Personal" />
+        <Picker.Item label="Shopping" value="Shopping" />
+        <Picker.Item label="Study" value="Study" />
+      </Picker>
       <Pressable style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>
       </Pressable>

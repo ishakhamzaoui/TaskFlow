@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     taskTitle: {
-        flex: 1,
         fontSize: 18,
     },
     deleteButton: {
