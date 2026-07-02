@@ -14,39 +14,28 @@ export default function TaskDetailsScreen({ route, navigation, tasks, setTasks }
   const { taskId } = route.params;
   const task = tasks.find((t) => t.id === taskId);
 
-  // If the task no longer exists, show a message.
+  const [title, setTitle] = useState(task?.title ?? '');
+
   if (!task) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>Task not found.</Text>
-
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.goBack()}
-        >
+        <Pressable style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.buttonText}>Go Back</Text>
         </Pressable>
       </View>
     );
   }
 
-  const [title, setTitle] = useState(task?.title ?? '');
-
   const handleSave = () => {
     setTasks((prevTasks) =>
-      prevTasks.map((t) =>
-        t.id === taskId ? { ...t, title } : t
-      )
+      prevTasks.map((t) => (t.id === taskId ? { ...t, title } : t))
     );
-
     navigation.goBack();
   };
 
   const handleDelete = () => {
-    setTasks((prevTasks) =>
-      prevTasks.filter((t) => t.id !== taskId)
-    );
-
+    setTasks((prevTasks) => prevTasks.filter((t) => t.id !== taskId));
     navigation.goBack();
   };
 
@@ -58,11 +47,9 @@ export default function TaskDetailsScreen({ route, navigation, tasks, setTasks }
         onChangeText={setTitle}
         placeholder="Task title"
       />
-
       <Pressable style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save</Text>
       </Pressable>
-
       <Pressable style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
         <Text style={styles.buttonText}>Delete</Text>
       </Pressable>
