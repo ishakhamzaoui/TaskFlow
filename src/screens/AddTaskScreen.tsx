@@ -2,7 +2,9 @@ import { useState, Dispatch, SetStateAction } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { Picker } from '@react-native-picker/picker';
 import { Task } from '../models/Task';
+import { Category } from '../models/Task';
 
 type AddTaskScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -16,6 +18,7 @@ type Props = {
 
 export default function AddTaskScreen({ navigation, setTasks }: Props) {
   const [title, setTitle] = useState('');
+  const [category, setCategory] = useState<Category>('Personal');
 
   const handleAdd = () => {
     if (title.trim().length === 0) return;
@@ -24,6 +27,7 @@ export default function AddTaskScreen({ navigation, setTasks }: Props) {
       id: Date.now().toString(),
       title: title.trim(),
       completed: false,
+      category,
     };
 
     setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -41,6 +45,15 @@ export default function AddTaskScreen({ navigation, setTasks }: Props) {
         onChangeText={setTitle}
         autoFocus
       />
+
+      <Picker selectedValue={category}
+        onValueChange={(value) => setCategory(value as Category)}
+      >
+        <Picker.Item label="Work" value="Work" />
+        <Picker.Item label="Personal" value="Personal" />
+        <Picker.Item label="Shopping" value="Shopping" />
+        <Picker.Item label="Study" value="Study" />
+      </Picker>
 
       <Pressable style={styles.button} onPress={handleAdd}>
         <Text style={styles.buttonText}>Add Task</Text>
