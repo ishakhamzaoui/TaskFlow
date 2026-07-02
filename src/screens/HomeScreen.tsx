@@ -28,6 +28,21 @@ export default function HomeScreen({ navigation, tasks, setTasks }: Props) {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     };
 
+    const getCategoryColor = (category: Task['category']) => {
+        switch (category) {
+            case 'Work':
+                return '#007AFF';
+            case 'Personal':
+                return '#34C759';
+            case 'Shopping':
+                return '#FF9500';
+            case 'Study':
+                return '#AF52DE';
+            default:
+                return '#8E8E93';
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>Today's Tasks</Text>
@@ -40,9 +55,20 @@ export default function HomeScreen({ navigation, tasks, setTasks }: Props) {
                         </Text>
                     </Pressable>
 
-                    <Pressable style={{ flex: 1 }}
-                        onPress={() => navigation.navigate('TaskDetails', { taskId: task.id })}>
+                    <Pressable
+                        style={{ flex: 1 }}
+                        onPress={() => navigation.navigate('TaskDetails', { taskId: task.id })}
+                    >
                         <Text style={styles.taskTitle}>{task.title}</Text>
+
+                        <View
+                            style={[
+                                styles.categoryTag,
+                                { backgroundColor: getCategoryColor(task.category) },
+                            ]}
+                        >
+                            <Text style={styles.categoryText}>{task.category}</Text>
+                        </View>
                     </Pressable>
 
                     <Pressable onPress={() => deleteTask(task.id)}>
@@ -103,5 +129,18 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold',
         lineHeight: 32,
+    },
+    categoryTag: {
+        alignSelf: 'flex-start',
+        paddingHorizontal: 8,
+        paddingVertical: 3,
+        borderRadius: 12,
+        marginTop: 4,
+    },
+
+    categoryText: {
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: '600',
     },
 });
